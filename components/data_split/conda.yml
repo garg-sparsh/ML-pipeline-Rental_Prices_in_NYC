@@ -1,12 +1,13 @@
-name: data_check
+name: download_file
 channels:
   - conda-forge
   - defaults
 dependencies:
-  - pandas=1.2.3
-  - pytest=6.2.2
-  - scipy=1.5.2
   - pip=23.3.1
+  - requests=2.24.0
+  - pandas==1.2.3
+  - scikit-learn=0.24.1
   - pip:
       - mlflow==2.8.1
+      - pandas==1.2.3
       - wandb==0.16.0

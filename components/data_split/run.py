@@ -8,7 +8,7 @@ import pandas as pd
 import wandb
 import tempfile
 from sklearn.model_selection import train_test_split
-from wandb_utils.log_artifact import log_artifact
+#from wandb_utils.log_artifact import log_artifact
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
 logger = logging.getLogger()
@@ -16,7 +16,7 @@ logger = logging.getLogger()
 
 def go(args):
 
-    run = wandb.init(job_type="train_val_test_split")
+    run = wandb.init(job_type="data_split")
     run.config.update(args)
 
     # Download input artifact. This will also note that this script is using this
@@ -41,13 +41,18 @@ def go(args):
 
             df.to_csv(fp.name, index=False)
 
-            log_artifact(
-                f"{k}_data.csv",
-                f"{k}_data",
-                f"{k} split of dataset",
-                fp.name,
-                run,
+            artifact = wandb.Artifact(
+                name=f"{k}_data.csv",
+                type=f"{k}_data",
+                description=f"{k} split of dataset {args.input}",
             )
+            
+            artifact.add_file(fp.name)
+            
+            logger.info(f"Logging artifact {k}_data.csv dataset")
+            run.log_artifact(artifact)
+            
+            artifact.wait()
 
 
 if __name__ == "__main__":
